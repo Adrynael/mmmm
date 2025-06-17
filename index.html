@@ -1,0 +1,190 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Ciências Farmacêuticas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex h-screen bg-gray-100">
+  <aside class="w-64 bg-blue-800 text-white p-4">
+    <h1 class="text-2xl font-bold mb-4">Manual Farmacêutico</h1>
+    <nav>
+      <ul>
+        <li>
+          <a href="#" class="block py-2 hover:bg-blue-600" onclick="toggleSubmenu('medicamentos-submenu')">Medicamentos</a>
+          <ul id="medicamentos-submenu" class="hidden pl-4">
+            <li><a href="#" class="block py-1 hover:bg-blue-600" onclick="loadContent('acido-acetilsalicilico')">Ácido Acetilsalicílico</a></li>
+            <li><a href="#" class="block py-1 hover:bg-blue-600" onclick="loadContent('amoxicilina')">Amoxicilina</a></li>
+            <li><a href="#" class="block py-1 hover:bg-blue-600" onclick="loadContent('ibuprofeno')">Ibuprofeno</a></li>
+            <li><a href="#" class="block py-1 hover:bg-blue-600" onclick="loadContent('METFORMINA CLORIDRATO')">Metformina</a></li>
+            <li><a href="#" class="block py-1 hover:bg-blue-600" onclick="loadContent('paracetamol')">Paracetamol</a></li>
+          </ul>
+        </li>
+        <li><a href="#" class="block py-2 hover:bg-blue-600" onclick="loadContent('fitoterapicos')">Fitoterápicos</a></li>
+        <li><a href="#" class="block py-2 hover:bg-blue-600" onclick="loadContent('feridas')">Tratamento de Feridas</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="flex-1 p-6">
+    <div class="mb-4">
+      <input type="text" id="search-input" class="border p-2" placeholder="Buscar medicamento..." onkeypress="if(event.key === 'Enter') searchMedicamento()">
+      <button onclick="searchMedicamento()" class="bg-blue-500 text-white p-2">Buscar</button>
+    </div>
+    <div id="content" class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-xl font-semibold mb-4">Bem-vindo ao Manual</h2>
+      <p>Selecione um tópico no menu ou use a busca acima.</p>
+    </div>
+  </main>
+  <script>
+    function toggleSubmenu(id) {
+      const submenu = document.getElementById(id);
+      submenu.classList.toggle('hidden');
+    }
+    async function loadContent(topic) {
+      const contentDiv = document.getElementById('content');
+      if (topic === 'fitoterapicos') {
+        contentDiv.innerHTML = `
+          <h2 class="text-xl font-semibold mb-4">Fitoterápicos</h2>
+          <p>Medicamentos fitoterápicos como Creme de Aroeira e Xarope de Guaco.</p>
+        `;
+        return;
+      }
+      if (topic === 'feridas') {
+        contentDiv.innerHTML = `
+          <h2 class="text-xl font-semibold mb-4">Tratamento de Feridas</h2>
+          <p>Técnicas e insumos como ácidos graxos essenciais e sulfadiazina de prata.</p>
+        `;
+        return;
+      }
+      try {
+        const response = await fetch('medicamentos.json');
+        const medicamentos = await response.json();
+        const medicamento = medicamentos.find(m => m.id === topic);
+        if (medicamento) {
+          contentDiv.innerHTML = `
+            <h2 class="text-xl font-semibold mb-4">${medicamento.nome}</h2>
+            <h3 class="text-lg font-medium mb-2">Indicações</h3>
+            <p>${medicamento.indicacoes}</p>
+            <h3 class="text-lg font-medium mb-2">Posologia</h3>
+            <table class="min-w-full bg-white border border-gray-300 mb-4">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="py-2 px-4 border-b">Indicação</th>
+                  <th class="py-2 px-4 border-b">Dose Adultos</th>
+                  <th class="py-2 px-4 border-b">Dose Crianças</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${medicamento.posologia.map(p => `
+                  <tr>
+                    <td class="py-2 px-4 border-b">${p.indicacao}</td>
+                    <td class="py-2 px-4 border-b">${p.dose_adultos}</td>
+                    <td class="py-2 px-4 border-b">${p.dose_criancas}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <h3 class="text-lg font-medium mb-2">Contraindicações</h3>
+            <p>${medicamento.contraindicacoes}</p>
+            <h3 class="text-lg font-medium mb-2">Cuidados</h3>
+            <p>${medicamento.cuidados}</p>
+            <h3 class="text-lg font-medium mb-2">Apresentação</h3>
+            <p>${medicamento.apresentacao}</p>
+          `;
+        } else {
+          contentDiv.innerHTML = '<p>Tópico não encontrado.</p>';
+        }
+      } catch (error) {
+        console.error('Erro ao carregar:', error);
+        contentDiv.innerHTML = '<p>Erro ao carregar o conteúdo.</p>';
+      }
+    }
+    async function searchMedicamento() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      try {
+        const response = await fetch('medicamentos.json');
+        const medicamentos = await response.json();
+        const resultado = medicamentos.find(m => m.nome.toLowerCase().includes(searchTerm));
+        const contentDiv = document.getElementById('content');
+        if (resultado) {
+          contentDiv.innerHTML = `
+            <h2 class="text-xl font-semibold mb-4">${resultado.nome}</h2>
+            <h3 class="text-lg font-medium mb-2">Indicações</h3>
+            <p>${resultado.indicacoes}</p>
+            <h3 class="text-lg font-medium mb-2">Posologia</h3>
+            <table class="min-w-full bg-white border border-gray-300 mb-4">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="py-2 px-4 border-b">Indicação</th>
+                  <th class="py-2 px-4 border-b">Dose Adultos</th>
+                  <th class="py-2 px-4 border-b">Dose Crianças</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${resultado.posologia.map(p => `
+                  <tr>
+                    <td class="py-2 px-4 border-b">${p.indicacao}</td>
+                    <td class="py-2 px-4 border-b">${p.dose_adultos}</td>
+                    <td class="py-2 px-4 border-b">${p.dose_criancas}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <h3 class="text-lg font-medium mb-2">Contraindicações</h3>
+            <p>${resultado.contraindicacoes}</p>
+            <h3 class="text-lg font-medium mb-2">Cuidados</h3>
+            <p>${resultado.cuidados}</p>
+            <h3 class="text-lg font-medium mb-2">Apresentação</h3>
+            <p>${resultado.apresentacao}</p>
+          `;
+        } else {
+          contentDiv.innerHTML = '<p>Medicamento não encontrado.</p>';
+        }
+      } catch (error) {
+        console.error('Erro ao buscar:', error);
+        contentDiv.innerHTML = '<p>Erro ao buscar o medicamento.</p>';
+      }
+    }
+  </script>
+</body>
+</html>
