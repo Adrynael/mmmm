@@ -1,0 +1,91 @@
+[
+  {
+    "id": "acido-acetilsalicilico",
+    "nome": "Ácido Acetilsalicílico",
+    "indicacoes": "Analgésico e antipirético para dores leves a moderadas e febre. Anti-inflamatório em doenças reumáticas. Antiagregante plaquetário na prevenção de eventos tromboembólicos.",
+    "posologia": [
+      {
+        "indicacao": "Analgésico/Antipirético",
+        "dose_adultos": "500-1000 mg a cada 4-6h (máx. 4g/dia)",
+        "dose_criancas": "10-15 mg/kg a cada 4-6h"
+      },
+      {
+        "indicacao": "Antiagregante",
+        "dose_adultos": "100-300 mg/dia",
+        "dose_criancas": "Não recomendado"
+      }
+    ],
+    "contraindicacoes": "Hipersensibilidade, úlcera péptica ativa, hemorragia gastrintestinal, asma induzida por AINEs, crianças < 12 anos com infecções virais (risco de Síndrome de Reye).",
+    "cuidados": "Monitorar sinais de sangramento, evitar uso prolongado em idosos, cautela em pacientes com insuficiência renal/hepática.",
+    "apresentacao": "Comprimido de 100 mg"
+  },
+  {
+    "id": "amoxicilina",
+    "nome": "Amoxicilina",
+    "indicacoes": "Infecções bacterianas sensíveis à amoxicilina, como otite média, sinusite, infecções respiratórias, urinárias e de pele.",
+    "posologia": [
+      {
+        "indicacao": "Infecções Leves/Moderadas",
+        "dose_adultos": "500 mg a cada 8h",
+        "dose_criancas": "20-40 mg/kg/dia, dividido a cada 8h"
+      },
+      {
+        "indicacao": "Infecções Graves",
+        "dose_adultos": "875 mg a cada 12h",
+        "dose_criancas": "40-90 mg/kg/dia, dividido a cada 8h"
+      }
+    ],
+    "contraindicacoes": "Hipersensibilidade a penicilinas, infecções por bactérias resistentes.",
+    "cuidados": "Avaliar função renal, risco de superinfecção por fungos ou bactérias resistentes.",
+    "apresentacao": "Cápsula de 500 mg, suspensão oral de 50 mg/ml"
+  },
+  {
+    "id": "ibuprofeno",
+    "nome": "Ibuprofeno",
+    "indicacoes": "Analgésico e antipirético para dores leves a moderadas e febre. Anti-inflamatório em condições como artrite e lesões musculoesqueléticas.",
+    "posologia": [
+      {
+        "indicacao": "Analgésico/Antipirético",
+        "dose_adultos": "200-400 mg a cada 4-6h (máx. 3,2 g/dia)",
+        "dose_criancas": "5-10 mg/kg a cada 6-8h"
+      },
+      {
+        "indicacao": "Anti-inflamatório",
+        "dose_adultos": "400-800 mg a cada 6-8h",
+        "dose_criancas": "Não recomendado"
+      }
+    ],
+    "contraindicacoes": "Hipersensibilidade, úlcera péptica ativa, insuficiência renal/hepática grave, terceiro trimestre de gravidez.",
+    "cuidados": "Monitorar função renal, evitar uso prolongado, cautela em pacientes com asma.",
+    "apresentacao": "Comprimido de 600 mg, suspensão oral de 50 mg/ml"
+  },
+  {
+  "id": "METFORMINA CLORIDRATO",
+  "nome": "Metformina",
+  "indicacoes": " Agente antidiabético.",
+  "posologia": [
+    {
+      "indicacao": "Diabetes mellitus tipo 2, não dependente de insulina",
+      "dose_adultos": "1 comprimido de 500mg, 2 vezes ao dia, ao desjejum e ao jantar, ou 850mg, 1 vez ao dia.",
+      "dose_criancas": "Não recomendado"
+    }
+  ],
+  "contraindicacoes": "hipersensibilidade ",
+  "apresentacao": "Comprimido de 500mg, 850mg, 1g."
+},
+{
+  "id": "paracetamol",
+  "nome": "Paracetamol",
+  "indicacoes": "Analgésico e antipirético para dores leves a moderadas e febre.",
+  "posologia": [
+    {
+      "indicacao": "Analgésico/Antipirético",
+      "dose_adultos": "500-1000 mg a cada 4-6h (máx. 4g/dia)",
+      "dose_criancas": "10-15 mg/kg a cada 4-6h"
+    }
+  ],
+  "contraindicacoes": "Hipersensibilidade ao paracetamol, insuficiência hepática grave.",
+  "cuidados": "Monitorar função hepática em uso prolongado, evitar uso com álcool.",
+  "apresentacao": "Comprimido de 500 mg, solução oral de 200 mg/ml"
+}
+] 
